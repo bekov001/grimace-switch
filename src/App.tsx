@@ -1,24 +1,15 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Switch from './components/Switch';
+import CustomizedSwitches from './components/example';
 
 function App() {
+  const anuar = (id:number) => {
+    console.log(id)
+    return id
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Switch firstString='Original' secondString='TradingView' callback={anuar}></Switch>
     </div>
   );
 }

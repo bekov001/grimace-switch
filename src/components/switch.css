@@ -1,0 +1,7 @@
+.MuiButton-outlined {
+    text-transform: capitalize !important;
+  }
+
+  .MuiButton-contained {
+    text-transform: capitalize !important;
+  }
