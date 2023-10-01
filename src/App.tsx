@@ -2,7 +2,6 @@ import './App.css';
 import LastTrades from './components/LastTrades';
 import OrdersViewSwitch from './components/OrdersViewSwitch';
 import Switch from './components/Switch';
-import CustomizedSwitches from './components/example';
 
 function App() {
   const anuar = (id:number) => {
