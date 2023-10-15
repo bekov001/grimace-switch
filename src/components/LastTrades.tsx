@@ -1,11 +1,48 @@
 import dayjs from 'dayjs';
 import "./LastTrades.css";
+import { useEffect } from 'react';
 
 var customParseFormat = require('dayjs/plugin/customParseFormat')
 dayjs.extend(customParseFormat)
+var utc = require('dayjs/plugin/utc')
+var timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 
-export default function LastTrades({amount}: {amount: number}) {
+function decimalCount (number: number) {
+    // Convert to String
+    const numberAsString = number.toString();
+    // String Contains Decimal
+    if (numberAsString.includes('.')) {
+      return numberAsString.split('.')[1].length;
+    }
+    // String Does Not Contain Decimal
+    return -number;
+  }
+
+function dec(x: number, y: number){
+    let number = Math.trunc(x*Math.pow(10, y))/Math.pow(10, y)
+    if (y < 0){
+        number = Math.floor(x/ (y * -1) ) * (y * -1);
+    }
+
+    return number;
+
+}
+function volume(data: number, amountDepth: number){
+    // const n = decimalCount(depth)
+    let num = Math.trunc(data / amountDepth * -1)
+    if (amountDepth > 0){
+        // console.log(data, amountDepth)
+        num = ((Math.trunc(data*Math.pow(10, amountDepth))/Math.pow(10, amountDepth)))
+        // console.log(num, amountDepth)
+    }
+    return num
+}
+export default function LastTrades({amount, depth, amountDepth}: {amount: number,  depth: string,
+    amountDepth: string}) {
     const DATA = [
         {
             "addr1": "0x5a1A14A608A14634B49075659Ce096a7d9A52602",
@@ -216,6 +253,11 @@ export default function LastTrades({amount}: {amount: number}) {
             "idOrderAddress2": "96f35043-8ec1-4781-b8ca-47ce7ef1b248"
         }
     ]
+    const n = decimalCount(parseFloat(depth))
+    const amountN = decimalCount(parseFloat(amountDepth))
+    useEffect(() => {
+
+    }, [])
 
   return (
     <div className="token_orders">
@@ -241,17 +283,19 @@ export default function LastTrades({amount}: {amount: number}) {
                     </div>
                 </div>
                 <div className="token_orders_sell_main">
-                    {DATA.slice(0, amount) ? (DATA.slice(0, amount).map((order) => <div  className="row">
-                            <div className="time">
-                                    {dayjs(order.time, "DD.MM HH:mm:ss SSS Z").format("DD.MM.YYYY HH:mm")}
+                    {DATA.slice(0, amount) ? (DATA.slice(0, amount).sort(function (a, b) {
+		return (dayjs(a.time, "DD.MM.YYYY HH:mm:ss SSS Z").isAfter(dayjs(b.time, "DD.MM.YYYY HH:mm:ss SSS Z")) ? 1 : -1)
+	}).reverse().map((order) => <div  className="row">
+                            <div className="time" style={{whiteSpace: 'nowrap'}}>
+                                    {dayjs(order.time, "DD.MM HH:mm:ss SSS Z").add(new Date().getTimezoneOffset()/60, "h").format("HH:mm:ss DD.MM.YYYY")}
                             </div>
                             <div className={order.sell ? "token_orders_sell_price" : "token_orders_buy_price"}>
-                                {order.price}
+                                {dec(parseFloat(order.price), n)}
                             </ div>
 
                             
                             <div className="token_orders_sell_total">
-                                {order.amount}
+                                {volume(parseFloat(order.amount), amountN)}
                             </div>
                     </div>)) : ""}
                     </div>

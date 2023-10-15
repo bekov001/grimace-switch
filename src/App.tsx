@@ -10,7 +10,7 @@ function App() {
   }
   return (
     <div className="App">
-      <LastTrades amount={10}></LastTrades>
+      <LastTrades amount={10} amountDepth='1' depth='1'></LastTrades>
       <Switch firstString='Original' secondString='TradingView' callback={anuar}></Switch>
       <OrdersViewSwitch callback={anuar}></OrdersViewSwitch>
     </div>
