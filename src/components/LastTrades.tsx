@@ -1,11 +1,13 @@
-import dayjs from 'dayjs';
+// import dayjs from 'dayjs';
 import "./LastTrades.css";
 import { useEffect } from 'react';
 
+const dayjs = require('dayjs');
+var utc = require('dayjs/plugin/utc')
+var timezone = require('dayjs/plugin/timezone') 
 var customParseFormat = require('dayjs/plugin/customParseFormat')
 dayjs.extend(customParseFormat)
-var utc = require('dayjs/plugin/utc')
-var timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
+// dependent on utc plugin
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -256,7 +258,9 @@ export default function LastTrades({amount, depth, amountDepth}: {amount: number
     const n = decimalCount(parseFloat(depth))
     const amountN = decimalCount(parseFloat(amountDepth))
     useEffect(() => {
-
+        // DATA.sort(function (a, b) {
+        //     return (dayjs(a.time, "DD.MM.YYYY HH:mm:ss SSS Z").isAfter(dayjs(b.time, "DD.MM.YYYY HH:mm:ss SSS Z")) ? 1 : -1)
+        // })
     }, [])
 
   return (
@@ -283,11 +287,9 @@ export default function LastTrades({amount, depth, amountDepth}: {amount: number
                     </div>
                 </div>
                 <div className="token_orders_sell_main">
-                    {DATA.slice(0, amount) ? (DATA.slice(0, amount).sort(function (a, b) {
-		return (dayjs(a.time, "DD.MM.YYYY HH:mm:ss SSS Z").isAfter(dayjs(b.time, "DD.MM.YYYY HH:mm:ss SSS Z")) ? 1 : -1)
-	}).reverse().map((order) => <div  className="row">
+                    {DATA.slice(0, amount) ? (DATA.slice(0, amount).reverse().map((order) => <div  className="row">
                             <div className="time" style={{whiteSpace: 'nowrap'}}>
-                                    {dayjs(order.time, "DD.MM HH:mm:ss SSS Z").add(new Date().getTimezoneOffset()/60, "h").format("HH:mm:ss DD.MM.YYYY")}
+                                    {dayjs(order.time, "DD.MM HH:mm:ss SSS Z").tz(dayjs.tz.guess()).format("HH:mm:ss DD.MM.YYYY Z")}
                             </div>
                             <div className={order.sell ? "token_orders_sell_price" : "token_orders_buy_price"}>
                                 {dec(parseFloat(order.price), n)}
